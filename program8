@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to represent a node in the doubly linked list
+struct Node {
+    char data[100]; // Assuming URLs are represented as strings
+    struct Node *next;
+    struct Node *prev;
+};
+
+// Function to create a new node
+struct Node *createNode(char url[]) {
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode != NULL) {
+        snprintf(newNode->data, sizeof(newNode->data), "%s", url);
+        newNode->next = NULL;
+        newNode->prev = NULL;
+    }
+    return newNode;
+}
+
+// Function to insert a new node at the end of the list
+void insertEnd(struct Node **head, char url[]) {
+    struct Node *newNode = createNode(url);
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        struct Node *current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+        newNode->prev = current;
+    }
+}
+
+// Function to go forward x steps
+struct Node *goForward(struct Node *current, int steps) {
+    while (current->next != NULL && steps > 0) {
+        current = current->next;
+        steps--;
+    }
+    return current;
+}
+
+// Function to go backward y steps
+struct Node *goBackward(struct Node *current, int steps) {
+    while (current->prev != NULL && steps > 0) {
+        current = current->prev;
+        steps--;
+    }
+    return current;
+}
+
+// Function to display the browser history
+void displayHistory(struct Node *head) {
+    printf("Browser History:\n");
+    while (head != NULL) {
+        printf("%s\n", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// Function to free memory allocated for the linked list
+void freeList(struct Node *head) {
+    while (head != NULL) {
+        struct Node *temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    struct Node *history = NULL;
+    struct Node *current = NULL;
+    int choice, steps;
+
+    do {
+        printf("1. Visit a page\n");
+        printf("2. Go forward\n");
+        printf("3. Go backward\n");
+        printf("4. Display history\n");
+        printf("0. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                {
+                    char url[100];
+                    printf("Enter the URL: ");
+                    scanf("%s", url);
+                    insertEnd(&history, url);
+                    current = history; // Move to the last visited page
+                    printf("Visited: %s\n\n", url);
+                    break;
+                }
+            case 2:
+                {
+                    printf("Enter the number of steps to go forward: ");
+                    scanf("%d", &steps);
+                    current = goForward(current, steps);
+                    printf("Forwarded %d steps\n\n", steps);
+                    break;
+                }
+            case 3:
+                {
+                    printf("Enter the number of steps to go backward: ");
+                    scanf("%d", &steps);
+                    current = goBackward(current, steps);
+                    printf("Backwarded %d steps\n\n", steps);
+                    break;
+                }
+            case 4:
+                displayHistory(history);
+                break;
+            case 0:
+                freeList(history); // Free allocated memory before exiting
+                printf("Exiting program\n");
+                break;
+            default:
+                printf("Invalid choice\n\n");
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
