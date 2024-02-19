@@ -1,124 +1,79 @@
-#include <stdio.h>
-#include <stdlib.h>
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-#define MAX 5
+namespace BOOK_STORE_APPLICATION
+{
+    public partial class Form1 : Form
+    {
+        private ArrayList ISBN = new ArrayList();
+        private ArrayList title = new ArrayList();
+        private ArrayList qty = new ArrayList();
+        private ArrayList author = new ArrayList();
 
-// Structure to represent a call
-struct Call {
-    int callNumber;
-    // Add other call-related information as needed
-};
 
-// Structure to represent a circular queue
-struct CircularQueue {
-    struct Call calls[MAX];
-    int front, rear;
-};
-
-// Function to initialize the circular queue
-void initializeQueue(struct CircularQueue *queue) {
-    queue->front = -1;
-    queue->rear = -1;
-}
-
-// Function to check if the queue is empty
-int isEmpty(struct CircularQueue *queue) {
-    return (queue->front == -1 && queue->rear == -1);
-}
-
-// Function to check if the queue is full
-int isFull(struct CircularQueue *queue) {
-    return ((queue->rear + 1) % MAX == queue->front);
-}
-
-// Function to add a call to the queue
-void addCall(struct CircularQueue *queue, int callNumber) {
-    if (isFull(queue)) {
-        printf("Overflow: Call Queue is full. Cannot add call %d\n", callNumber);
-        return;
-    }
-
-    struct Call newCall;
-    newCall.callNumber = callNumber;
-
-    if (isEmpty(queue)) {
-        queue->front = 0;
-        queue->rear = 0;
-    } else {
-        queue->rear = (queue->rear + 1) % MAX;
-    }
-
-    queue->calls[queue->rear] = newCall;
-    printf("Added Call %d to the queue\n", callNumber);
-}
-
-// Function to delete a call from the queue
-void deleteCall(struct CircularQueue *queue) {
-    if (isEmpty(queue)) {
-        printf("Underflow: Call Queue is empty. No call to remove\n");
-        return;
-    }
-
-    printf("Removed Call %d from the queue\n", queue->calls[queue->front].callNumber);
-
-    if (queue->front == queue->rear) {
-        // Last call in the queue
-        queue->front = -1;
-        queue->rear = -1;
-    } else {
-        queue->front = (queue->front + 1) % MAX;
-    }
-}
-
-// Function to display the current status of calls in the queue
-void displayQueue(struct CircularQueue *queue) {
-    if (isEmpty(queue)) {
-        printf("Call Queue is empty\n");
-        return;
-    }
-
-    printf("Current Status of Calls in the Queue:\n");
-    int i = queue->front;
-    do {
-        printf("Call %d\n", queue->calls[i].callNumber);
-        i = (i + 1) % MAX;
-    } while (i != (queue->rear + 1) % MAX);
-}
-
-int main() {
-    struct CircularQueue callQueue;
-    initializeQueue(&callQueue);
-
-    int choice, callNumber;
-
-    do {
-        printf("\n1. Add a call\n");
-        printf("2. Delete a call\n");
-        printf("3. Display current status of calls\n");
-        printf("0. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                printf("Enter the call number: ");
-                scanf("%d", &callNumber);
-                addCall(&callQueue, callNumber);
-                break;
-            case 2:
-                deleteCall(&callQueue);
-                break;
-            case 3:
-                displayQueue(&callQueue);
-                break;
-            case 0:
-                printf("Exiting program\n");
-                break;
-            default:
-                printf("Invalid choice\n");
+        public Form1()
+        {
+            InitializeComponent();
         }
 
-    } while (choice != 0);
+        private void label2_Click(object sender, EventArgs e)
+        {
 
-    return 0;
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (ISBN.Contains(textBox1.Text))
+            {
+                int index = ISBN.IndexOf(textBox1.Text);
+                title[index] = textBox2.Text;
+                author[index] = textBox3.Text;
+                qty[index] = textBox5.Text;
+
+                MessageBox.Show("Book information has been updated successfully");
+            }
+            else
+            {
+                MessageBox.Show("ISBN of the book not found");
+            }
+
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ISBN.Add(textBox1.Text);
+            title.Add(textBox2.Text);
+            author.Add(textBox3.Text);
+            qty.Add(textBox5.Text);
+            MessageBox.Show("BOOK INFORMATION ADDED SUCCESSFULLY");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();
+
+            for (int i = 0; i < ISBN.Count; i++)
+            {
+                ListViewItem item = new ListViewItem(new string[] { ISBN[i].ToString(), title[i].ToString(), author[i].ToString(), qty[i].ToString() });
+               
+                listView1.Items.Add(item);
+
+            }
+
+        }
+    }
 }
