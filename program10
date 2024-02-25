@@ -70,10 +70,7 @@ void main()
 	case 3: printf("\n Enter the key to search in the dictionary:");
 		scanf("%s",key);
 		search(ptree,key);
-		//if(f==-1)
-		//	printf("\n Key %s is not found in the dictionary");
-		//else
-		//	printf("\n Key %s is found in the dictionary");
+		
         break;
 	case 4: printf("\nEXITING BINARY TREE");
 		exit(1);
